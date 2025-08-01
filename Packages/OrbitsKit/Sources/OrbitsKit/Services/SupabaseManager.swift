@@ -1,13 +1,12 @@
 import Foundation
 import Supabase
-import OrbitsKit
 
 // A simple class to hold our shared Supabase client instance.
-final class SupabaseManager {
-    static let shared = SupabaseManager() // Singleton pattern
+public final class SupabaseManager: @unchecked Sendable {
+    public static let shared = SupabaseManager() // Singleton pattern
     
-    let client: SupabaseClient
-    let service: SupabaseService
+    public let client: SupabaseClient
+    public let service: SupabaseService
     
     private init() {
         // Configure JSON encoder/decoder for snake_case <-> camelCase

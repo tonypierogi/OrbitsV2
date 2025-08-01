@@ -2,13 +2,13 @@ import SwiftUI
 import Supabase
 
 @MainActor
-final class AuthManager: ObservableObject {
-    @Published var session: Session?
+public final class AuthManager: ObservableObject {
+    @Published public var session: Session?
 
     private let supabase = SupabaseManager.shared.client
     private var authStateTask: Task<Void, Never>?
 
-    init() {
+    public init() {
         // Check for existing session
         self.session = supabase.auth.currentSession
         

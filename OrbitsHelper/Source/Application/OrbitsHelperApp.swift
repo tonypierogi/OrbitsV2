@@ -1,15 +1,19 @@
-// New, corrected code
 import SwiftUI
+import OrbitsKit
 
 @main
 struct OrbitsHelperApp: App {
+    // Use the shared AuthManager from our OrbitsKit package
+    @StateObject private var authManager = AuthManager()
+
     var body: some Scene {
-        // We provide a minimal placeholder view.
-        // Later, this will be replaced with the logic
-        // to run the background SyncEngine.
         WindowGroup {
-            Text("Orbits Helper")
-                .frame(width: 200, height: 100)
+            // Switch between login and main view based on auth state
+            if authManager.session != nil {
+                MainView()
+            } else {
+                AuthenticationView()
+            }
         }
     }
 }
