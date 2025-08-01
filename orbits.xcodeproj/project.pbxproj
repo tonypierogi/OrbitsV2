@@ -6,6 +6,14 @@
 	objectVersion = 77;
 	objects = {
 
+/* Begin PBXBuildFile section */
+		363510392E3D59A40093D2F6 /* iMessageExtension.appex in Embed Foundation Extensions */ = {isa = PBXBuildFile; fileRef = 3635102A2E3D59A30093D2F6 /* iMessageExtension.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
+		363510FD2E3D65D20093D2F6 /* OrbitsHelper.app in Resources */ = {isa = PBXBuildFile; fileRef = 363510432E3D5B5A0093D2F6 /* OrbitsHelper.app */; };
+		367099E32E3D74740029419E /* OrbitsKit in Frameworks */ = {isa = PBXBuildFile; productRef = 367099E22E3D74740029419E /* OrbitsKit */; };
+		367099E52E3D747B0029419E /* OrbitsKit in Frameworks */ = {isa = PBXBuildFile; productRef = 367099E42E3D747B0029419E /* OrbitsKit */; };
+		367099E72E3D74820029419E /* OrbitsKit in Frameworks */ = {isa = PBXBuildFile; productRef = 367099E62E3D74820029419E /* OrbitsKit */; };
+/* End PBXBuildFile section */
+
 /* Begin PBXContainerItemProxy section */
 		3635100A2E3D4D210093D2F6 /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
@@ -21,13 +29,95 @@
 			remoteGlobalIDString = 36350FFA2E3D4D200093D2F6;
 			remoteInfo = orbits;
 		};
+		363510372E3D59A40093D2F6 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 36350FF32E3D4D200093D2F6 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 363510292E3D59A30093D2F6;
+			remoteInfo = iMessageExtension;
+		};
+		363510512E3D5B5B0093D2F6 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 36350FF32E3D4D200093D2F6 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 363510422E3D5B5A0093D2F6;
+			remoteInfo = OrbitsHelper;
+		};
+		3635105B2E3D5B5B0093D2F6 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 36350FF32E3D4D200093D2F6 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 363510422E3D5B5A0093D2F6;
+			remoteInfo = OrbitsHelper;
+		};
+		363510FE2E3D65D20093D2F6 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 36350FF32E3D4D200093D2F6 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 363510422E3D5B5A0093D2F6;
+			remoteInfo = OrbitsHelper;
+		};
+		363511002E3D65DE0093D2F6 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 36350FF32E3D4D200093D2F6 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 363510422E3D5B5A0093D2F6;
+			remoteInfo = OrbitsHelper;
+		};
+		363511022E3D65EA0093D2F6 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 36350FF32E3D4D200093D2F6 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 363510422E3D5B5A0093D2F6;
+			remoteInfo = OrbitsHelper;
+		};
+		363511042E3D660C0093D2F6 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 36350FF32E3D4D200093D2F6 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 363510422E3D5B5A0093D2F6;
+			remoteInfo = OrbitsHelper;
+		};
 /* End PBXContainerItemProxy section */
+
+/* Begin PBXCopyFilesBuildPhase section */
+		3635103E2E3D59A40093D2F6 /* Embed Foundation Extensions */ = {
+			isa = PBXCopyFilesBuildPhase;
+			buildActionMask = 2147483647;
+			dstPath = "";
+			dstSubfolderSpec = 13;
+			files = (
+				363510392E3D59A40093D2F6 /* iMessageExtension.appex in Embed Foundation Extensions */,
+			);
+			name = "Embed Foundation Extensions";
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
 		36350FFB2E3D4D210093D2F6 /* orbits.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = orbits.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		363510092E3D4D210093D2F6 /* orbitsTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = orbitsTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		363510132E3D4D210093D2F6 /* orbitsUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = orbitsUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
+		3635102A2E3D59A30093D2F6 /* iMessageExtension.appex */ = {isa = PBXFileReference; explicitFileType = "wrapper.app-extension"; includeInIndex = 0; path = iMessageExtension.appex; sourceTree = BUILT_PRODUCTS_DIR; };
+		363510432E3D5B5A0093D2F6 /* OrbitsHelper.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = OrbitsHelper.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		363510502E3D5B5B0093D2F6 /* OrbitsHelperTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = OrbitsHelperTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
+		3635105A2E3D5B5B0093D2F6 /* OrbitsHelperUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = OrbitsHelperUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
+		363511062E3D663B0093D2F6 /* OrbitsKit */ = {isa = PBXFileReference; lastKnownFileType = wrapper; name = OrbitsKit; path = Packages/OrbitsKit; sourceTree = "<group>"; };
+		363511072E3D66AF0093D2F6 /* OrbitsKit */ = {isa = PBXFileReference; lastKnownFileType = wrapper; path = OrbitsKit; sourceTree = "<group>"; };
+		3635110B2E3D6A140093D2F6 /* Packages */ = {isa = PBXFileReference; lastKnownFileType = wrapper; path = Packages; sourceTree = "<group>"; };
+		3635115C2E3D6F820093D2F6 /* Packages */ = {isa = PBXFileReference; lastKnownFileType = wrapper; path = Packages; sourceTree = "<group>"; };
+		3635115D2E3D6FC60093D2F6 /* Package.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = Package.swift; path = Packages/Package.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
+
+/* Begin PBXFileSystemSynchronizedBuildFileExceptionSet section */
+		3635103A2E3D59A40093D2F6 /* Exceptions for "iMessageExtension" folder in "iMessageExtension" target */ = {
+			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
+			membershipExceptions = (
+				Info.plist,
+			);
+			target = 363510292E3D59A30093D2F6 /* iMessageExtension */;
+		};
+/* End PBXFileSystemSynchronizedBuildFileExceptionSet section */
 
 /* Begin PBXFileSystemSynchronizedRootGroup section */
 		36350FFD2E3D4D210093D2F6 /* orbits */ = {
@@ -45,6 +135,29 @@
 			path = orbitsUITests;
 			sourceTree = "<group>";
 		};
+		3635102E2E3D59A30093D2F6 /* iMessageExtension */ = {
+			isa = PBXFileSystemSynchronizedRootGroup;
+			exceptions = (
+				3635103A2E3D59A40093D2F6 /* Exceptions for "iMessageExtension" folder in "iMessageExtension" target */,
+			);
+			path = iMessageExtension;
+			sourceTree = "<group>";
+		};
+		363510442E3D5B5A0093D2F6 /* OrbitsHelper */ = {
+			isa = PBXFileSystemSynchronizedRootGroup;
+			path = OrbitsHelper;
+			sourceTree = "<group>";
+		};
+		363510532E3D5B5B0093D2F6 /* OrbitsHelperTests */ = {
+			isa = PBXFileSystemSynchronizedRootGroup;
+			path = OrbitsHelperTests;
+			sourceTree = "<group>";
+		};
+		3635105D2E3D5B5B0093D2F6 /* OrbitsHelperUITests */ = {
+			isa = PBXFileSystemSynchronizedRootGroup;
+			path = OrbitsHelperUITests;
+			sourceTree = "<group>";
+		};
 /* End PBXFileSystemSynchronizedRootGroup section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -52,6 +165,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				367099E32E3D74740029419E /* OrbitsKit in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -69,6 +183,36 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
+		363510272E3D59A30093D2F6 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				367099E52E3D747B0029419E /* OrbitsKit in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		363510402E3D5B5A0093D2F6 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				367099E72E3D74820029419E /* OrbitsKit in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		3635104D2E3D5B5B0093D2F6 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		363510572E3D5B5B0093D2F6 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
@@ -78,7 +222,14 @@
 				36350FFD2E3D4D210093D2F6 /* orbits */,
 				3635100C2E3D4D210093D2F6 /* orbitsTests */,
 				363510162E3D4D210093D2F6 /* orbitsUITests */,
+				3635102E2E3D59A30093D2F6 /* iMessageExtension */,
+				363510442E3D5B5A0093D2F6 /* OrbitsHelper */,
+				363510532E3D5B5B0093D2F6 /* OrbitsHelperTests */,
+				3635105D2E3D5B5B0093D2F6 /* OrbitsHelperUITests */,
+				3635102B2E3D59A30093D2F6 /* Frameworks */,
 				36350FFC2E3D4D210093D2F6 /* Products */,
+				3635110B2E3D6A140093D2F6 /* Packages */,
+				3635115C2E3D6F820093D2F6 /* Packages */,
 			);
 			sourceTree = "<group>";
 		};
@@ -88,8 +239,30 @@
 				36350FFB2E3D4D210093D2F6 /* orbits.app */,
 				363510092E3D4D210093D2F6 /* orbitsTests.xctest */,
 				363510132E3D4D210093D2F6 /* orbitsUITests.xctest */,
+				3635102A2E3D59A30093D2F6 /* iMessageExtension.appex */,
+				363510432E3D5B5A0093D2F6 /* OrbitsHelper.app */,
+				363510502E3D5B5B0093D2F6 /* OrbitsHelperTests.xctest */,
+				3635105A2E3D5B5B0093D2F6 /* OrbitsHelperUITests.xctest */,
 			);
 			name = Products;
+			sourceTree = "<group>";
+		};
+		3635102B2E3D59A30093D2F6 /* Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+				3635115D2E3D6FC60093D2F6 /* Package.swift */,
+				363511082E3D66AF0093D2F6 /* Packages */,
+				363511062E3D663B0093D2F6 /* OrbitsKit */,
+			);
+			name = Frameworks;
+			sourceTree = "<group>";
+		};
+		363511082E3D66AF0093D2F6 /* Packages */ = {
+			isa = PBXGroup;
+			children = (
+				363511072E3D66AF0093D2F6 /* OrbitsKit */,
+			);
+			path = Packages;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -102,16 +275,23 @@
 				36350FF72E3D4D200093D2F6 /* Sources */,
 				36350FF82E3D4D200093D2F6 /* Frameworks */,
 				36350FF92E3D4D200093D2F6 /* Resources */,
+				3635103E2E3D59A40093D2F6 /* Embed Foundation Extensions */,
 			);
 			buildRules = (
 			);
 			dependencies = (
+				363510382E3D59A40093D2F6 /* PBXTargetDependency */,
+				363510FF2E3D65D20093D2F6 /* PBXTargetDependency */,
+				363511012E3D65DE0093D2F6 /* PBXTargetDependency */,
+				363511032E3D65EA0093D2F6 /* PBXTargetDependency */,
+				363511052E3D660C0093D2F6 /* PBXTargetDependency */,
 			);
 			fileSystemSynchronizedGroups = (
 				36350FFD2E3D4D210093D2F6 /* orbits */,
 			);
 			name = orbits;
 			packageProductDependencies = (
+				367099E22E3D74740029419E /* OrbitsKit */,
 			);
 			productName = orbits;
 			productReference = 36350FFB2E3D4D210093D2F6 /* orbits.app */;
@@ -163,6 +343,98 @@
 			productReference = 363510132E3D4D210093D2F6 /* orbitsUITests.xctest */;
 			productType = "com.apple.product-type.bundle.ui-testing";
 		};
+		363510292E3D59A30093D2F6 /* iMessageExtension */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 3635103B2E3D59A40093D2F6 /* Build configuration list for PBXNativeTarget "iMessageExtension" */;
+			buildPhases = (
+				363510262E3D59A30093D2F6 /* Sources */,
+				363510272E3D59A30093D2F6 /* Frameworks */,
+				363510282E3D59A30093D2F6 /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			fileSystemSynchronizedGroups = (
+				3635102E2E3D59A30093D2F6 /* iMessageExtension */,
+			);
+			name = iMessageExtension;
+			packageProductDependencies = (
+				367099E42E3D747B0029419E /* OrbitsKit */,
+			);
+			productName = iMessageExtension;
+			productReference = 3635102A2E3D59A30093D2F6 /* iMessageExtension.appex */;
+			productType = "com.apple.product-type.app-extension.messages";
+		};
+		363510422E3D5B5A0093D2F6 /* OrbitsHelper */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 363510622E3D5B5B0093D2F6 /* Build configuration list for PBXNativeTarget "OrbitsHelper" */;
+			buildPhases = (
+				3635103F2E3D5B5A0093D2F6 /* Sources */,
+				363510402E3D5B5A0093D2F6 /* Frameworks */,
+				363510412E3D5B5A0093D2F6 /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			fileSystemSynchronizedGroups = (
+				363510442E3D5B5A0093D2F6 /* OrbitsHelper */,
+			);
+			name = OrbitsHelper;
+			packageProductDependencies = (
+				367099E62E3D74820029419E /* OrbitsKit */,
+			);
+			productName = OrbitsHelper;
+			productReference = 363510432E3D5B5A0093D2F6 /* OrbitsHelper.app */;
+			productType = "com.apple.product-type.application";
+		};
+		3635104F2E3D5B5B0093D2F6 /* OrbitsHelperTests */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 363510652E3D5B5B0093D2F6 /* Build configuration list for PBXNativeTarget "OrbitsHelperTests" */;
+			buildPhases = (
+				3635104C2E3D5B5B0093D2F6 /* Sources */,
+				3635104D2E3D5B5B0093D2F6 /* Frameworks */,
+				3635104E2E3D5B5B0093D2F6 /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				363510522E3D5B5B0093D2F6 /* PBXTargetDependency */,
+			);
+			fileSystemSynchronizedGroups = (
+				363510532E3D5B5B0093D2F6 /* OrbitsHelperTests */,
+			);
+			name = OrbitsHelperTests;
+			packageProductDependencies = (
+			);
+			productName = OrbitsHelperTests;
+			productReference = 363510502E3D5B5B0093D2F6 /* OrbitsHelperTests.xctest */;
+			productType = "com.apple.product-type.bundle.unit-test";
+		};
+		363510592E3D5B5B0093D2F6 /* OrbitsHelperUITests */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 363510682E3D5B5B0093D2F6 /* Build configuration list for PBXNativeTarget "OrbitsHelperUITests" */;
+			buildPhases = (
+				363510562E3D5B5B0093D2F6 /* Sources */,
+				363510572E3D5B5B0093D2F6 /* Frameworks */,
+				363510582E3D5B5B0093D2F6 /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				3635105C2E3D5B5B0093D2F6 /* PBXTargetDependency */,
+			);
+			fileSystemSynchronizedGroups = (
+				3635105D2E3D5B5B0093D2F6 /* OrbitsHelperUITests */,
+			);
+			name = OrbitsHelperUITests;
+			packageProductDependencies = (
+			);
+			productName = OrbitsHelperUITests;
+			productReference = 3635105A2E3D5B5B0093D2F6 /* OrbitsHelperUITests.xctest */;
+			productType = "com.apple.product-type.bundle.ui-testing";
+		};
 /* End PBXNativeTarget section */
 
 /* Begin PBXProject section */
@@ -184,6 +456,20 @@
 						CreatedOnToolsVersion = 16.3;
 						TestTargetID = 36350FFA2E3D4D200093D2F6;
 					};
+					363510292E3D59A30093D2F6 = {
+						CreatedOnToolsVersion = 16.3;
+					};
+					363510422E3D5B5A0093D2F6 = {
+						CreatedOnToolsVersion = 16.3;
+					};
+					3635104F2E3D5B5B0093D2F6 = {
+						CreatedOnToolsVersion = 16.3;
+						TestTargetID = 363510422E3D5B5A0093D2F6;
+					};
+					363510592E3D5B5B0093D2F6 = {
+						CreatedOnToolsVersion = 16.3;
+						TestTargetID = 363510422E3D5B5A0093D2F6;
+					};
 				};
 			};
 			buildConfigurationList = 36350FF62E3D4D200093D2F6 /* Build configuration list for PBXProject "orbits" */;
@@ -203,6 +489,10 @@
 				36350FFA2E3D4D200093D2F6 /* orbits */,
 				363510082E3D4D210093D2F6 /* orbitsTests */,
 				363510122E3D4D210093D2F6 /* orbitsUITests */,
+				363510292E3D59A30093D2F6 /* iMessageExtension */,
+				363510422E3D5B5A0093D2F6 /* OrbitsHelper */,
+				3635104F2E3D5B5B0093D2F6 /* OrbitsHelperTests */,
+				363510592E3D5B5B0093D2F6 /* OrbitsHelperUITests */,
 			);
 		};
 /* End PBXProject section */
@@ -212,6 +502,7 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				363510FD2E3D65D20093D2F6 /* OrbitsHelper.app in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -223,6 +514,34 @@
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 		363510112E3D4D210093D2F6 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		363510282E3D59A30093D2F6 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		363510412E3D5B5A0093D2F6 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		3635104E2E3D5B5B0093D2F6 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		363510582E3D5B5B0093D2F6 /* Resources */ = {
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
@@ -253,6 +572,34 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
+		363510262E3D59A30093D2F6 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		3635103F2E3D5B5A0093D2F6 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		3635104C2E3D5B5B0093D2F6 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		363510562E3D5B5B0093D2F6 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 /* End PBXSourcesBuildPhase section */
 
 /* Begin PBXTargetDependency section */
@@ -265,6 +612,41 @@
 			isa = PBXTargetDependency;
 			target = 36350FFA2E3D4D200093D2F6 /* orbits */;
 			targetProxy = 363510142E3D4D210093D2F6 /* PBXContainerItemProxy */;
+		};
+		363510382E3D59A40093D2F6 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 363510292E3D59A30093D2F6 /* iMessageExtension */;
+			targetProxy = 363510372E3D59A40093D2F6 /* PBXContainerItemProxy */;
+		};
+		363510522E3D5B5B0093D2F6 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 363510422E3D5B5A0093D2F6 /* OrbitsHelper */;
+			targetProxy = 363510512E3D5B5B0093D2F6 /* PBXContainerItemProxy */;
+		};
+		3635105C2E3D5B5B0093D2F6 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 363510422E3D5B5A0093D2F6 /* OrbitsHelper */;
+			targetProxy = 3635105B2E3D5B5B0093D2F6 /* PBXContainerItemProxy */;
+		};
+		363510FF2E3D65D20093D2F6 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 363510422E3D5B5A0093D2F6 /* OrbitsHelper */;
+			targetProxy = 363510FE2E3D65D20093D2F6 /* PBXContainerItemProxy */;
+		};
+		363511012E3D65DE0093D2F6 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 363510422E3D5B5A0093D2F6 /* OrbitsHelper */;
+			targetProxy = 363511002E3D65DE0093D2F6 /* PBXContainerItemProxy */;
+		};
+		363511032E3D65EA0093D2F6 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 363510422E3D5B5A0093D2F6 /* OrbitsHelper */;
+			targetProxy = 363511022E3D65EA0093D2F6 /* PBXContainerItemProxy */;
+		};
+		363511052E3D660C0093D2F6 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 363510422E3D5B5A0093D2F6 /* OrbitsHelper */;
+			targetProxy = 363511042E3D660C0093D2F6 /* PBXContainerItemProxy */;
 		};
 /* End PBXTargetDependency section */
 
@@ -416,10 +798,11 @@
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				REGISTER_APP_GROUPS = YES;
 				SDKROOT = auto;
-				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator macosx xros xrsimulator";
+				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator macosx";
+				SUPPORTS_MACCATALYST = NO;
 				SWIFT_EMIT_LOC_STRINGS = YES;
 				SWIFT_VERSION = 5.0;
-				TARGETED_DEVICE_FAMILY = "1,2,7";
+				TARGETED_DEVICE_FAMILY = "1,2";
 				XROS_DEPLOYMENT_TARGET = 2.4;
 			};
 			name = Debug;
@@ -455,10 +838,11 @@
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				REGISTER_APP_GROUPS = YES;
 				SDKROOT = auto;
-				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator macosx xros xrsimulator";
+				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator macosx";
+				SUPPORTS_MACCATALYST = NO;
 				SWIFT_EMIT_LOC_STRINGS = YES;
 				SWIFT_VERSION = 5.0;
-				TARGETED_DEVICE_FAMILY = "1,2,7";
+				TARGETED_DEVICE_FAMILY = "1,2";
 				XROS_DEPLOYMENT_TARGET = 2.4;
 			};
 			name = Release;
@@ -553,6 +937,195 @@
 			};
 			name = Release;
 		};
+		3635103C2E3D59A40093D2F6 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = "iMessage App Icon";
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = D4BZPYU84C;
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = iMessageExtension/Info.plist;
+				INFOPLIST_KEY_CFBundleDisplayName = iMessageExtension;
+				INFOPLIST_KEY_NSHumanReadableCopyright = "";
+				IPHONEOS_DEPLOYMENT_TARGET = 18.4;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@executable_path/../../Frameworks",
+				);
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = com.amarolabs.orbits.iMessageExtension;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SDKROOT = iphoneos;
+				SKIP_INSTALL = YES;
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Debug;
+		};
+		3635103D2E3D59A40093D2F6 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = "iMessage App Icon";
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = D4BZPYU84C;
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = iMessageExtension/Info.plist;
+				INFOPLIST_KEY_CFBundleDisplayName = iMessageExtension;
+				INFOPLIST_KEY_NSHumanReadableCopyright = "";
+				IPHONEOS_DEPLOYMENT_TARGET = 18.4;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@executable_path/../../Frameworks",
+				);
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = com.amarolabs.orbits.iMessageExtension;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SDKROOT = iphoneos;
+				SKIP_INSTALL = YES;
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				VALIDATE_PRODUCT = YES;
+			};
+			name = Release;
+		};
+		363510632E3D5B5B0093D2F6 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				CODE_SIGN_ENTITLEMENTS = OrbitsHelper/OrbitsHelper.entitlements;
+				CODE_SIGN_STYLE = Automatic;
+				COMBINE_HIDPI_IMAGES = YES;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = D4BZPYU84C;
+				ENABLE_HARDENED_RUNTIME = YES;
+				ENABLE_PREVIEWS = YES;
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_KEY_NSHumanReadableCopyright = "";
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/../Frameworks",
+				);
+				MACOSX_DEPLOYMENT_TARGET = 15.4;
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = com.amarolabs.orbits.OrbitsHelper;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				REGISTER_APP_GROUPS = YES;
+				SDKROOT = macosx;
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_VERSION = 5.0;
+			};
+			name = Debug;
+		};
+		363510642E3D5B5B0093D2F6 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				CODE_SIGN_ENTITLEMENTS = OrbitsHelper/OrbitsHelper.entitlements;
+				CODE_SIGN_STYLE = Automatic;
+				COMBINE_HIDPI_IMAGES = YES;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = D4BZPYU84C;
+				ENABLE_HARDENED_RUNTIME = YES;
+				ENABLE_PREVIEWS = YES;
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_KEY_NSHumanReadableCopyright = "";
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/../Frameworks",
+				);
+				MACOSX_DEPLOYMENT_TARGET = 15.4;
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = com.amarolabs.orbits.OrbitsHelper;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				REGISTER_APP_GROUPS = YES;
+				SDKROOT = macosx;
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_VERSION = 5.0;
+			};
+			name = Release;
+		};
+		363510662E3D5B5B0093D2F6 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				BUNDLE_LOADER = "$(TEST_HOST)";
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = D4BZPYU84C;
+				GENERATE_INFOPLIST_FILE = YES;
+				MACOSX_DEPLOYMENT_TARGET = 15.4;
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = com.amarolabs.orbits.OrbitsHelperTests;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SDKROOT = macosx;
+				SWIFT_EMIT_LOC_STRINGS = NO;
+				SWIFT_VERSION = 5.0;
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/OrbitsHelper.app/$(BUNDLE_EXECUTABLE_FOLDER_PATH)/OrbitsHelper";
+			};
+			name = Debug;
+		};
+		363510672E3D5B5B0093D2F6 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				BUNDLE_LOADER = "$(TEST_HOST)";
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = D4BZPYU84C;
+				GENERATE_INFOPLIST_FILE = YES;
+				MACOSX_DEPLOYMENT_TARGET = 15.4;
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = com.amarolabs.orbits.OrbitsHelperTests;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SDKROOT = macosx;
+				SWIFT_EMIT_LOC_STRINGS = NO;
+				SWIFT_VERSION = 5.0;
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/OrbitsHelper.app/$(BUNDLE_EXECUTABLE_FOLDER_PATH)/OrbitsHelper";
+			};
+			name = Release;
+		};
+		363510692E3D5B5B0093D2F6 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = D4BZPYU84C;
+				GENERATE_INFOPLIST_FILE = YES;
+				MACOSX_DEPLOYMENT_TARGET = 15.4;
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = com.amarolabs.orbits.OrbitsHelperUITests;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SDKROOT = macosx;
+				SWIFT_EMIT_LOC_STRINGS = NO;
+				SWIFT_VERSION = 5.0;
+				TEST_TARGET_NAME = OrbitsHelper;
+			};
+			name = Debug;
+		};
+		3635106A2E3D5B5B0093D2F6 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = D4BZPYU84C;
+				GENERATE_INFOPLIST_FILE = YES;
+				MACOSX_DEPLOYMENT_TARGET = 15.4;
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = com.amarolabs.orbits.OrbitsHelperUITests;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SDKROOT = macosx;
+				SWIFT_EMIT_LOC_STRINGS = NO;
+				SWIFT_VERSION = 5.0;
+				TEST_TARGET_NAME = OrbitsHelper;
+			};
+			name = Release;
+		};
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
@@ -592,7 +1165,58 @@
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
+		3635103B2E3D59A40093D2F6 /* Build configuration list for PBXNativeTarget "iMessageExtension" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				3635103C2E3D59A40093D2F6 /* Debug */,
+				3635103D2E3D59A40093D2F6 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		363510622E3D5B5B0093D2F6 /* Build configuration list for PBXNativeTarget "OrbitsHelper" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				363510632E3D5B5B0093D2F6 /* Debug */,
+				363510642E3D5B5B0093D2F6 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		363510652E3D5B5B0093D2F6 /* Build configuration list for PBXNativeTarget "OrbitsHelperTests" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				363510662E3D5B5B0093D2F6 /* Debug */,
+				363510672E3D5B5B0093D2F6 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		363510682E3D5B5B0093D2F6 /* Build configuration list for PBXNativeTarget "OrbitsHelperUITests" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				363510692E3D5B5B0093D2F6 /* Debug */,
+				3635106A2E3D5B5B0093D2F6 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
 /* End XCConfigurationList section */
+
+/* Begin XCSwiftPackageProductDependency section */
+		367099E22E3D74740029419E /* OrbitsKit */ = {
+			isa = XCSwiftPackageProductDependency;
+			productName = OrbitsKit;
+		};
+		367099E42E3D747B0029419E /* OrbitsKit */ = {
+			isa = XCSwiftPackageProductDependency;
+			productName = OrbitsKit;
+		};
+		367099E62E3D74820029419E /* OrbitsKit */ = {
+			isa = XCSwiftPackageProductDependency;
+			productName = OrbitsKit;
+		};
+/* End XCSwiftPackageProductDependency section */
 	};
 	rootObject = 36350FF32E3D4D200093D2F6 /* Project object */;
 }
