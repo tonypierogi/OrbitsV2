@@ -1,6 +1,9 @@
 import SwiftUI
+import OrbitsKit
 
 struct MainTabView: View {
+    private let supabaseService = SupabaseService(client: SupabaseManager.shared.client)
+    
     var body: some View {
         TabView {
             NavigationStack {
@@ -11,7 +14,7 @@ struct MainTabView: View {
             }
 
             NavigationStack {
-                OrbitsView()
+                OrbitsView(supabaseService: supabaseService)
             }
             .tabItem {
                 Label("Orbits", systemImage: "rotate.3d")
