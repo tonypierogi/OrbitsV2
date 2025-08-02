@@ -1,15 +1,39 @@
 import Foundation
 
-// This service will eventually be responsible for querying the local chat.db SQLite database.
-// This is a complex task involving private APIs and requires Full Disk Access permission.
-// For now, we are creating a placeholder.
+// This service is responsible for querying the local chat.db SQLite database.
+// This requires Full Disk Access permission on macOS.
 struct LocalMessagesProvider {
+    private let messageDatabaseService = MessageDatabaseService()
     
-    // Placeholder function. In the future, this will connect to chat.db
-    // and return a list of conversations that have unread messages.
+    // Fetch all message threads with their unread counts and last message info
+    func fetchMessageThreads() throws -> [MessageDatabaseService.MessageThread] {
+        return try messageDatabaseService.fetchMessageThreads()
+    }
+    
+    // Fetch unread message threads (contacts with unread messages)
     func fetchUnreadMessageThreads() -> [String] {
-        print("Fetching unread messages... (Placeholder)")
-        // Example: returns a list of contact identifiers with unread messages.
-        return ["CONTACT_ID_1", "CONTACT_ID_2"]
+        do {
+            let threads = try messageDatabaseService.fetchMessageThreads()
+            return threads
+                .filter { $0.unreadCount > 0 }
+                .map { $0.handle }
+        } catch {
+            print("Error fetching unread messages: \(error.localizedDescription)")
+            return []
+        }
+    }
+    
+    // Check if we have access to the messages database
+    func hasMessageAccess() -> Bool {
+        return messageDatabaseService.canAccessDatabase()
+    }
+    
+    // Get a summary of message access status
+    func getAccessStatus() -> String {
+        if hasMessageAccess() {
+            return "Message access granted"
+        } else {
+            return "Full Disk Access required to sync messages"
+        }
     }
 }

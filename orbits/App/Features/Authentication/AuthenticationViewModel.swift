@@ -1,5 +1,6 @@
 import SwiftUI
 import Supabase
+import OrbitsKit
 
 @MainActor
 final class AuthenticationViewModel: ObservableObject {
