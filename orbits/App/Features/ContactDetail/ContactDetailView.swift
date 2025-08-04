@@ -6,8 +6,8 @@ struct ContactDetailView: View {
     @State private var selectedOrbit: Orbit?
     @State private var showingOrbitPicker = false
     @State private var showingAddNote = false
-    @State private var newNoteText = ""
     @State private var showingTagPicker = false
+    @State private var editingNote: Note?
     
     init(person: Person, supabaseService: SupabaseService) {
         self._viewModel = StateObject(wrappedValue: ContactDetailViewModel(person: person, supabaseService: supabaseService))
@@ -64,7 +64,12 @@ struct ContactDetailView: View {
             orbitPickerSheet
         }
         .sheet(isPresented: $showingAddNote) {
-            addNoteSheet
+            AddNoteView(viewModel: NotesViewModel(supabaseService: viewModel.supabaseService), person: viewModel.person, supabaseService: viewModel.supabaseService)
+                .onDisappear {
+                    Task {
+                        await viewModel.loadData()
+                    }
+                }
         }
         .sheet(isPresented: $showingTagPicker) {
             tagPickerSheet
@@ -282,7 +287,10 @@ struct ContactDetailView: View {
             } else {
                 VStack(spacing: 8) {
                     ForEach(viewModel.notes) { note in
-                        NoteRow(note: note)
+                        NavigationLink(destination: NoteDetailView(viewModel: NotesViewModel(supabaseService: viewModel.supabaseService), note: note)) {
+                            ContactDetailNoteRow(note: note)
+                        }
+                        .buttonStyle(PlainButtonStyle())
                     }
                 }
             }
@@ -365,43 +373,6 @@ struct ContactDetailView: View {
         }
     }
     
-    @ViewBuilder
-    private var addNoteSheet: some View {
-        NavigationView {
-            VStack {
-                TextEditor(text: $newNoteText)
-                    .padding(4)
-                    .overlay(
-                        RoundedRectangle(cornerRadius: 8)
-                            .stroke(Color.gray.opacity(0.2), lineWidth: 1)
-                    )
-                    .padding()
-                
-                Spacer()
-            }
-            .navigationTitle("Add Note")
-            .navigationBarTitleDisplayMode(.inline)
-            .toolbar {
-                ToolbarItem(placement: .navigationBarLeading) {
-                    Button("Cancel") {
-                        newNoteText = ""
-                        showingAddNote = false
-                    }
-                }
-                
-                ToolbarItem(placement: .navigationBarTrailing) {
-                    Button("Save") {
-                        Task {
-                            await viewModel.addNote(newNoteText)
-                            newNoteText = ""
-                            showingAddNote = false
-                        }
-                    }
-                    .disabled(newNoteText.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty)
-                }
-            }
-        }
-    }
     
     @ViewBuilder
     private var tagPickerSheet: some View {
@@ -422,25 +393,52 @@ struct ContactDetailView: View {
     }
 }
 
-struct NoteRow: View {
+struct ContactDetailNoteRow: View {
     let note: Note
+    
+    var noteTitle: String {
+        let lines = note.text.components(separatedBy: .newlines)
+        return lines.first?.trimmingCharacters(in: .whitespaces) ?? ""
+    }
+    
+    var noteBody: String? {
+        let lines = note.text.components(separatedBy: .newlines)
+        guard lines.count > 1 else { return nil }
+        let bodyLines = lines.dropFirst()
+        let body = bodyLines.joined(separator: " ").trimmingCharacters(in: .whitespaces)
+        return body.isEmpty ? nil : body
+    }
     
     var body: some View {
         VStack(alignment: .leading, spacing: 8) {
-            Text(note.text)
-                .font(.subheadline)
+            Text(noteTitle)
+                .font(.headline)
+                .lineLimit(1)
+            
+            if let body = noteBody {
+                Text(body)
+                    .font(.subheadline)
+                    .foregroundColor(.secondary)
+                    .lineLimit(2)
+            }
             
             HStack {
-                Text(note.createdAt, style: .relative)
+                Text(note.createdAt, style: .date)
                     .font(.caption)
                     .foregroundColor(.secondary)
                 
                 Spacer()
                 
                 if note.type == .todo {
-                    Label("Todo", systemImage: "checklist")
-                        .font(.caption)
-                        .foregroundColor(.orange)
+                    if let dueAt = note.dueAt {
+                        Label("Due \(dueAt, style: .relative)", systemImage: "calendar")
+                            .font(.caption)
+                            .foregroundColor(dueAt < Date() ? .red : .orange)
+                    } else {
+                        Label("Todo", systemImage: "checklist")
+                            .font(.caption)
+                            .foregroundColor(.orange)
+                    }
                 }
             }
         }

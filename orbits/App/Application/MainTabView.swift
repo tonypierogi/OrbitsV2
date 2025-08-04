@@ -32,7 +32,7 @@ struct MainTabView: View {
             .tag(2)
 
             NavigationStack {
-                NotesView()
+                NotesView(supabaseService: supabaseService)
             }
             .tabItem {
                 Label("Notes", systemImage: "note.text")

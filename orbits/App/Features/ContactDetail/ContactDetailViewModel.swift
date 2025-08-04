@@ -10,7 +10,7 @@ class ContactDetailViewModel: ObservableObject {
     @Published var tagCategories: [TagCategory] = []
     @Published var availableOrbits: [Orbit] = []
     
-    private let supabaseService: SupabaseService
+    let supabaseService: SupabaseService
     
     init(person: Person, supabaseService: SupabaseService) {
         self.person = person
@@ -160,8 +160,18 @@ class ContactDetailViewModel: ObservableObject {
     }
     
     func addNote(_ content: String) async {
-        // This would need a createNote method in SupabaseService
-        // For now, this is a placeholder
+        do {
+            let newNote = try await supabaseService.createNote(
+                personId: person.id,
+                type: .note,
+                text: content
+            )
+            await MainActor.run {
+                self.notes.insert(newNote, at: 0)
+            }
+        } catch {
+            print("Failed to add note: \(error)")
+        }
     }
     
     func addTag(_ tag: Tag) async {
