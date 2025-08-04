@@ -7,6 +7,7 @@ struct ContactDetailView: View {
     @State private var showingOrbitPicker = false
     @State private var showingAddNote = false
     @State private var newNoteText = ""
+    @State private var showingTagPicker = false
     
     init(person: Person, supabaseService: SupabaseService) {
         self._viewModel = StateObject(wrappedValue: ContactDetailViewModel(person: person, supabaseService: supabaseService))
@@ -46,6 +47,14 @@ struct ContactDetailView: View {
                     Button(action: viewModel.markContacted) {
                         Label("Mark as Contacted", systemImage: "checkmark.circle")
                     }
+                    Divider()
+                    Button(action: viewModel.toggleNeedsResponse) {
+                        if viewModel.person.needsResponse {
+                            Label("Clear Response Flag", systemImage: "flag.slash")
+                        } else {
+                            Label("Mark Needs Response", systemImage: "flag.fill")
+                        }
+                    }
                 } label: {
                     Image(systemName: "ellipsis.circle")
                 }
@@ -56,6 +65,9 @@ struct ContactDetailView: View {
         }
         .sheet(isPresented: $showingAddNote) {
             addNoteSheet
+        }
+        .sheet(isPresented: $showingTagPicker) {
+            tagPickerSheet
         }
         .task {
             await viewModel.loadData()
@@ -220,6 +232,23 @@ struct ContactDetailView: View {
                     Text("\(viewModel.person.unreadCount)")
                 }
                 .font(.subheadline)
+                
+                if viewModel.person.needsResponse {
+                    HStack {
+                        Image(systemName: "flag.fill")
+                            .foregroundColor(.orange)
+                        Text("Marked for response")
+                            .foregroundColor(.orange)
+                        Spacer()
+                        if let markedAt = viewModel.person.needsResponseMarkedAt {
+                            Text(markedAt, style: .relative)
+                                .font(.caption)
+                                .foregroundColor(.secondary)
+                        }
+                    }
+                    .font(.subheadline)
+                    .padding(.top, 4)
+                }
             }
             .padding()
             .background(Color(UIColor.secondarySystemBackground))
@@ -269,13 +298,13 @@ struct ContactDetailView: View {
                 
                 Spacer()
                 
-                Button(action: viewModel.addTag) {
+                Button(action: { showingTagPicker = true }) {
                     Image(systemName: "plus.circle.fill")
                         .foregroundColor(.blue)
                 }
             }
             
-            if viewModel.tags.isEmpty {
+            if viewModel.personTags.isEmpty {
                 Text("No tags")
                     .font(.subheadline)
                     .foregroundColor(.secondary)
@@ -285,7 +314,7 @@ struct ContactDetailView: View {
                     .cornerRadius(10)
             } else {
                 FlowLayout(spacing: 8) {
-                    ForEach(viewModel.tags) { tag in
+                    ForEach(viewModel.personTags) { tag in
                         TagChip(tag: tag) {
                             await viewModel.removeTag(tag)
                         }
@@ -373,6 +402,24 @@ struct ContactDetailView: View {
             }
         }
     }
+    
+    @ViewBuilder
+    private var tagPickerSheet: some View {
+        TagPickerView(
+            allTags: viewModel.allTags,
+            categories: viewModel.tagCategories,
+            selectedTags: viewModel.personTags,
+            onSave: { selectedTags in
+                Task {
+                    await viewModel.updatePersonTags(selectedTags)
+                    showingTagPicker = false
+                }
+            },
+            onCancel: {
+                showingTagPicker = false
+            }
+        )
+    }
 }
 
 struct NoteRow: View {
@@ -422,6 +469,29 @@ struct TagChip: View {
         .background(Color.blue.opacity(0.1))
         .foregroundColor(.blue)
         .cornerRadius(20)
+    }
+}
+
+struct TagSelectionRow: View {
+    let tag: Tag
+    let isSelected: Bool
+    let onToggle: (Bool) -> Void
+    
+    var body: some View {
+        Button(action: { onToggle(!isSelected) }) {
+            HStack {
+                Text(tag.label)
+                    .foregroundColor(.primary)
+                
+                Spacer()
+                
+                if isSelected {
+                    Image(systemName: "checkmark.circle.fill")
+                        .foregroundColor(.blue)
+                }
+            }
+        }
+        .buttonStyle(PlainButtonStyle())
     }
 }
 

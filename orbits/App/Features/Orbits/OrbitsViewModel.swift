@@ -6,6 +6,7 @@ class OrbitsViewModel: ObservableObject {
     @Published var orbits: [Orbit] = []
     @Published var peopleNeedingAttention: [Person] = []
     @Published var isLoading = false
+    @Published var personTags: [UUID: [Tag]] = [:]
     
     let supabaseService: SupabaseService
     
@@ -18,6 +19,9 @@ class OrbitsViewModel: ObservableObject {
     }
     
     func loadData() async {
+        // Prevent multiple simultaneous loads
+        guard !isLoading else { return }
+        
         isLoading = true
         defer { isLoading = false }
         
@@ -84,6 +88,9 @@ class OrbitsViewModel: ObservableObject {
                 let days2 = daysSinceLastContact(for: person2) ?? 0
                 return days1 > days2
             }
+            
+            // Fetch tags more efficiently - we'll fetch them lazily or optimize later
+            self.personTags = [:]
         } catch {
             print("Error loading orbits data: \(error)")
         }

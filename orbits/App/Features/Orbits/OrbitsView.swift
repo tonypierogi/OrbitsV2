@@ -44,11 +44,16 @@ struct OrbitsView: View {
                     .listRowInsets(EdgeInsets())
             } else {
                 ForEach(sortedAndFilteredPeople, id: \.id) { person in
-                    ContactCard(person: person, onTap: {
-                        // Navigation handled by background NavigationLink
-                    }, onMessage: {
-                        openMessagesApp(for: person)
-                    })
+                    ContactCard(
+                        person: person, 
+                        tags: viewModel.personTags[person.id] ?? [],
+                        onTap: {
+                            // Navigation handled by background NavigationLink
+                        }, 
+                        onMessage: {
+                            openMessagesApp(for: person)
+                        }
+                    )
                     .background(
                         NavigationLink(destination: ContactDetailView(person: person, supabaseService: viewModel.supabaseService)) {
                             EmptyView()
@@ -99,8 +104,10 @@ struct OrbitsView: View {
         .refreshable {
             await viewModel.loadData()
         }
-        .task {
-            await viewModel.loadData()
+        .onAppear {
+            Task {
+                await viewModel.loadData()
+            }
         }
     }
     

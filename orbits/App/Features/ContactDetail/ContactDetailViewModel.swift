@@ -5,7 +5,9 @@ import OrbitsKit
 class ContactDetailViewModel: ObservableObject {
     @Published var person: Person
     @Published var notes: [Note] = []
-    @Published var tags: [Tag] = []
+    @Published var personTags: [Tag] = []
+    @Published var allTags: [Tag] = []
+    @Published var tagCategories: [TagCategory] = []
     @Published var availableOrbits: [Orbit] = []
     
     private let supabaseService: SupabaseService
@@ -112,13 +114,19 @@ class ContactDetailViewModel: ObservableObject {
     func loadData() async {
         do {
             async let notesTask = supabaseService.fetchNotes(for: person.id)
-            async let tagsTask = supabaseService.fetchTags()
+            async let personTagsTask = supabaseService.fetchTagsForPerson(person.id)
+            async let allTagsTask = supabaseService.fetchTags()
+            async let categoriesTask = supabaseService.fetchTagCategories()
             async let orbitsTask = supabaseService.fetchOrbits()
             
-            let (fetchedNotes, fetchedTags, fetchedOrbits) = try await (notesTask, tagsTask, orbitsTask)
+            let (fetchedNotes, fetchedPersonTags, fetchedAllTags, fetchedCategories, fetchedOrbits) = try await (
+                notesTask, personTagsTask, allTagsTask, categoriesTask, orbitsTask
+            )
             
             self.notes = fetchedNotes
-            self.tags = fetchedTags
+            self.personTags = fetchedPersonTags
+            self.allTags = fetchedAllTags
+            self.tagCategories = fetchedCategories
             self.availableOrbits = fetchedOrbits
         } catch {
             print("Error loading data: \(error)")
@@ -156,18 +164,101 @@ class ContactDetailViewModel: ObservableObject {
         // For now, this is a placeholder
     }
     
-    func addTag() {
-        // This would show a tag picker/creator
-        // For now, this is a placeholder
+    func addTag(_ tag: Tag) async {
+        do {
+            try await supabaseService.addTagToPerson(tag.id, personId: person.id)
+            if !personTags.contains(where: { $0.id == tag.id }) {
+                personTags.append(tag)
+            }
+        } catch {
+            print("Error adding tag: \(error)")
+        }
     }
     
     func removeTag(_ tag: Tag) async {
-        // This would remove the tag association
-        // For now, this is a placeholder
+        do {
+            try await supabaseService.removeTagFromPerson(tag.id, personId: person.id)
+            personTags.removeAll { $0.id == tag.id }
+        } catch {
+            print("Error removing tag: \(error)")
+        }
+    }
+    
+    func updatePersonTags(_ newTags: [Tag]) async {
+        let currentTagIds = Set(personTags.map { $0.id })
+        let newTagIds = Set(newTags.map { $0.id })
+        
+        // Tags to add
+        let tagsToAdd = newTagIds.subtracting(currentTagIds)
+        for tagId in tagsToAdd {
+            if let tag = newTags.first(where: { $0.id == tagId }) {
+                await addTag(tag)
+            }
+        }
+        
+        // Tags to remove
+        let tagsToRemove = currentTagIds.subtracting(newTagIds)
+        for tagId in tagsToRemove {
+            if let tag = personTags.first(where: { $0.id == tagId }) {
+                await removeTag(tag)
+            }
+        }
     }
     
     func markContacted() {
         // This would update the last contact date
         // For now, this is a placeholder
+    }
+    
+    func toggleNeedsResponse() {
+        Task {
+            do {
+                if person.needsResponse {
+                    try await supabaseService.clearPersonNeedsResponse(person.id)
+                    person = Person(
+                        id: person.id,
+                        userId: person.userId,
+                        contactIdentifier: person.contactIdentifier,
+                        phoneNumber: person.phoneNumber,
+                        emailAddress: person.emailAddress,
+                        displayName: person.displayName,
+                        photoHash: person.photoHash,
+                        photoAvailable: person.photoAvailable,
+                        orbitId: person.orbitId,
+                        unreadCount: person.unreadCount,
+                        lastMessageAt: person.lastMessageAt,
+                        createdAt: person.createdAt,
+                        updatedAt: person.updatedAt,
+                        orbit: person.orbit,
+                        chatGuid: person.chatGuid,
+                        needsResponse: false,
+                        needsResponseMarkedAt: nil
+                    )
+                } else {
+                    try await supabaseService.markPersonNeedsResponse(person.id)
+                    person = Person(
+                        id: person.id,
+                        userId: person.userId,
+                        contactIdentifier: person.contactIdentifier,
+                        phoneNumber: person.phoneNumber,
+                        emailAddress: person.emailAddress,
+                        displayName: person.displayName,
+                        photoHash: person.photoHash,
+                        photoAvailable: person.photoAvailable,
+                        orbitId: person.orbitId,
+                        unreadCount: person.unreadCount,
+                        lastMessageAt: person.lastMessageAt,
+                        createdAt: person.createdAt,
+                        updatedAt: person.updatedAt,
+                        orbit: person.orbit,
+                        chatGuid: person.chatGuid,
+                        needsResponse: true,
+                        needsResponseMarkedAt: Date()
+                    )
+                }
+            } catch {
+                print("Error toggling needs response: \(error)")
+            }
+        }
     }
 }

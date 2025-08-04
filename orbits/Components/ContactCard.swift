@@ -3,11 +3,13 @@ import OrbitsKit
 
 struct ContactCard: View {
     let person: Person
+    let tags: [Tag]
     let onTap: () -> Void
     let onMessage: () -> Void
     
-    init(person: Person, onTap: @escaping () -> Void, onMessage: @escaping () -> Void = {}) {
+    init(person: Person, tags: [Tag] = [], onTap: @escaping () -> Void, onMessage: @escaping () -> Void = {}) {
         self.person = person
+        self.tags = tags
         self.onTap = onTap
         self.onMessage = onMessage
     }
@@ -74,6 +76,36 @@ struct ContactCard: View {
                         .font(.system(size: 13))
                         .foregroundColor(.secondary)
                 }
+                
+                // Tags row - temporarily disabled for performance
+                // Will be re-enabled with optimized fetching
+                /*
+                if !tags.isEmpty {
+                    ScrollView(.horizontal, showsIndicators: false) {
+                        HStack(spacing: 4) {
+                            ForEach(tags.prefix(3)) { tag in
+                                Text(tag.label)
+                                    .font(.system(size: 11))
+                                    .padding(.horizontal, 6)
+                                    .padding(.vertical, 2)
+                                    .background(Color.blue.opacity(0.1))
+                                    .foregroundColor(.blue)
+                                    .clipShape(Capsule())
+                            }
+                            
+                            if tags.count > 3 {
+                                Text("+\(tags.count - 3)")
+                                    .font(.system(size: 11))
+                                    .padding(.horizontal, 6)
+                                    .padding(.vertical, 2)
+                                    .background(Color.gray.opacity(0.1))
+                                    .foregroundColor(.gray)
+                                    .clipShape(Capsule())
+                            }
+                        }
+                    }
+                }
+                */
             }
             
             Spacer(minLength: 8)
