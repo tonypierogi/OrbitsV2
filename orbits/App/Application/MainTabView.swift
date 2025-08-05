@@ -40,10 +40,10 @@ struct MainTabView: View {
             .tag(3)
 
             NavigationStack {
-                SettingsView()
+                AllContactsView()
             }
             .tabItem {
-                Label("Settings", systemImage: "gear")
+                Label("Contacts", systemImage: "person.2.fill")
             }
             .tag(4)
         }

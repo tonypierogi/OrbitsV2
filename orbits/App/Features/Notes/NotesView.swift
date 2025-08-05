@@ -6,16 +6,42 @@ struct NotesView: View {
     @State private var showingAddNote = false
     @State private var showCompleted = false
     @State private var editingNote: Note?
+    @State private var showingSettings = false
+    @State private var searchText = ""
     
     init(supabaseService: SupabaseService) {
         self._viewModel = StateObject(wrappedValue: NotesViewModel(supabaseService: supabaseService))
     }
     
+    private var filteredOpenNotes: [Note] {
+        guard !searchText.isEmpty else { return viewModel.openNotes }
+        
+        return viewModel.openNotes.filter { note in
+            note.text.localizedCaseInsensitiveContains(searchText)
+        }
+    }
+    
+    private var filteredOpenTodos: [Note] {
+        guard !searchText.isEmpty else { return viewModel.openTodos }
+        
+        return viewModel.openTodos.filter { todo in
+            todo.text.localizedCaseInsensitiveContains(searchText)
+        }
+    }
+    
+    private var filteredCompletedItems: [Note] {
+        guard !searchText.isEmpty else { return viewModel.completedItems }
+        
+        return viewModel.completedItems.filter { item in
+            item.text.localizedCaseInsensitiveContains(searchText)
+        }
+    }
+    
     var body: some View {
         List {
-            if !viewModel.openNotes.isEmpty {
+            if !filteredOpenNotes.isEmpty {
                 Section("Notes") {
-                    ForEach(viewModel.openNotes) { note in
+                    ForEach(filteredOpenNotes) { note in
                         NavigationLink(destination: NoteDetailView(viewModel: viewModel, note: note)) {
                             NoteRow(note: note, viewModel: viewModel)
                         }
@@ -40,9 +66,9 @@ struct NotesView: View {
                 }
             }
             
-            if !viewModel.openTodos.isEmpty {
+            if !filteredOpenTodos.isEmpty {
                 Section("Todos") {
-                    ForEach(viewModel.openTodos) { todo in
+                    ForEach(filteredOpenTodos) { todo in
                         NavigationLink(destination: NoteDetailView(viewModel: viewModel, note: todo)) {
                             TodoRow(todo: todo, viewModel: viewModel)
                         }
@@ -67,9 +93,9 @@ struct NotesView: View {
                 }
             }
             
-            if showCompleted && !viewModel.completedItems.isEmpty {
+            if showCompleted && !filteredCompletedItems.isEmpty {
                 Section("Completed") {
-                    ForEach(viewModel.completedItems) { item in
+                    ForEach(filteredCompletedItems) { item in
                         NavigationLink(destination: NoteDetailView(viewModel: viewModel, note: item)) {
                             CompletedItemRow(item: item, viewModel: viewModel)
                         }
@@ -87,21 +113,29 @@ struct NotesView: View {
                 }
             }
             
-            if viewModel.notes.isEmpty && !viewModel.isLoading {
+            if filteredOpenNotes.isEmpty && filteredOpenTodos.isEmpty && (!showCompleted || filteredCompletedItems.isEmpty) && !viewModel.isLoading {
                 ContentUnavailableView(
-                    "No Notes Yet",
-                    systemImage: "note.text",
-                    description: Text("Tap the + button to create your first note")
+                    searchText.isEmpty ? "No Notes Yet" : "No Results",
+                    systemImage: searchText.isEmpty ? "note.text" : "magnifyingglass",
+                    description: Text(searchText.isEmpty ? "Tap the + button to create your first note" : "Try a different search term")
                 )
             }
         }
         .navigationTitle("Notes")
+        .searchable(text: $searchText, prompt: "Search notes and todos")
         .toolbar {
             ToolbarItem(placement: .navigationBarTrailing) {
-                Button {
-                    showingAddNote = true
-                } label: {
-                    Image(systemName: "plus")
+                HStack(spacing: 16) {
+                    Button {
+                        showingAddNote = true
+                    } label: {
+                        Image(systemName: "plus")
+                    }
+                    
+                    Button(action: { showingSettings = true }) {
+                        Image(systemName: "gear")
+                            .foregroundColor(.gray)
+                    }
                 }
             }
             
@@ -122,6 +156,11 @@ struct NotesView: View {
         }
         .sheet(item: $editingNote) { note in
             EditNoteView(viewModel: viewModel, note: note)
+        }
+        .sheet(isPresented: $showingSettings) {
+            NavigationStack {
+                SettingsView()
+            }
         }
         .task {
             await viewModel.loadNotes()

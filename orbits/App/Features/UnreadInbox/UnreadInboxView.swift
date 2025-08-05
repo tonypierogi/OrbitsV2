@@ -5,17 +5,42 @@ struct UnreadInboxView: View {
     @StateObject private var viewModel = UnreadInboxViewModel()
     @State private var showingSortMenu = false
     @State private var showingFilterMenu = false
+    @State private var showingSettings = false
+    @State private var searchText = ""
+    
+    private var filteredContacts: [Person] {
+        guard !searchText.isEmpty else { return viewModel.unreadContacts }
+        
+        return viewModel.unreadContacts.filter { person in
+            // Search in display name and contact identifier
+            let name = person.displayName ?? person.contactIdentifier
+            if name.localizedCaseInsensitiveContains(searchText) {
+                return true
+            }
+            
+            // Search in tags
+            if let tags = viewModel.personTags[person.id] {
+                for tag in tags {
+                    if tag.label.localizedCaseInsensitiveContains(searchText) {
+                        return true
+                    }
+                }
+            }
+            
+            return false
+        }
+    }
     
     var body: some View {
         List {
-            if viewModel.unreadContacts.isEmpty {
+            if filteredContacts.isEmpty {
                 ContentUnavailableView(
-                    "No Unread Messages", 
-                    systemImage: "tray",
-                    description: Text("Messages from your contacts will appear here")
+                    searchText.isEmpty ? "No Unread Messages" : "No Results", 
+                    systemImage: searchText.isEmpty ? "tray" : "magnifyingglass",
+                    description: Text(searchText.isEmpty ? "Messages from your contacts will appear here" : "Try a different search term")
                 )
             } else {
-                ForEach(viewModel.unreadContacts) { person in
+                ForEach(filteredContacts) { person in
                     NavigationLink(destination: ContactDetailView(
                         person: person,
                         supabaseService: viewModel.supabaseService
@@ -98,6 +123,7 @@ struct UnreadInboxView: View {
             }
         }
         .navigationTitle("Inbox")
+        .searchable(text: $searchText, prompt: "Search contacts")
         .toolbar {
             ToolbarItem(placement: .navigationBarTrailing) {
                 HStack(spacing: 16) {
@@ -119,11 +145,22 @@ struct UnreadInboxView: View {
                         Image(systemName: "line.3.horizontal.decrease.circle")
                             .foregroundColor(hasActiveFilters ? .blue : .gray)
                     }
+                    
+                    // Settings button
+                    Button(action: { showingSettings = true }) {
+                        Image(systemName: "gear")
+                            .foregroundColor(.gray)
+                    }
                 }
             }
         }
         .sheet(isPresented: $showingFilterMenu) {
             FilterMenuView(viewModel: viewModel)
+        }
+        .sheet(isPresented: $showingSettings) {
+            NavigationStack {
+                SettingsView()
+            }
         }
         .onAppear {
             Task {

@@ -5,6 +5,7 @@ struct OrbitsView: View {
     @StateObject private var viewModel: OrbitsViewModel
     @State private var searchText = ""
     @State private var showingFilterSheet = false
+    @State private var showingSettings = false
     @State private var sortOption: SortOption = .leastOverdue
     @State private var filterOption: FilterOption = .all
     
@@ -95,11 +96,22 @@ struct OrbitsView: View {
                         Image(systemName: "line.3.horizontal.decrease.circle")
                             .font(.title3)
                     }
+                    
+                    Button(action: { showingSettings = true }) {
+                        Image(systemName: "gear")
+                            .font(.title3)
+                            .foregroundColor(.gray)
+                    }
                 }
             }
         }
         .sheet(isPresented: $showingFilterSheet) {
             filterSheet
+        }
+        .sheet(isPresented: $showingSettings) {
+            NavigationStack {
+                SettingsView()
+            }
         }
         .refreshable {
             await viewModel.loadData()
@@ -234,8 +246,22 @@ struct OrbitsView: View {
         // Apply search filter
         if !searchText.isEmpty {
             people = people.filter { person in
+                // Search in display name and contact identifier
                 let name = person.displayName ?? person.contactIdentifier
-                return name.localizedCaseInsensitiveContains(searchText)
+                if name.localizedCaseInsensitiveContains(searchText) {
+                    return true
+                }
+                
+                // Search in tags
+                if let tags = viewModel.personTags[person.id] {
+                    for tag in tags {
+                        if tag.label.localizedCaseInsensitiveContains(searchText) {
+                            return true
+                        }
+                    }
+                }
+                
+                return false
             }
         }
         
