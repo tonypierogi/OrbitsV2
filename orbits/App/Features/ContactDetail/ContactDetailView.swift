@@ -8,6 +8,7 @@ struct ContactDetailView: View {
     @State private var showingAddNote = false
     @State private var showingTagPicker = false
     @State private var editingNote: Note?
+    @State private var showingAddTodo = false
     
     init(person: Person, supabaseService: SupabaseService) {
         self._viewModel = StateObject(wrappedValue: ContactDetailViewModel(person: person, supabaseService: supabaseService))
@@ -16,8 +17,14 @@ struct ContactDetailView: View {
     var body: some View {
         ScrollView {
             VStack(spacing: 20) {
-                // Contact Header
+                // Contact Header with Quick Actions
                 contactHeader
+                
+                // Tags Section (moved to top)
+                tagsSection
+                
+                // Notes Section (moved up)
+                notesSection
                 
                 // Orbit Assignment
                 orbitSection
@@ -27,12 +34,6 @@ struct ContactDetailView: View {
                 
                 // Message Activity
                 messageActivitySection
-                
-                // Notes Section
-                notesSection
-                
-                // Tags Section
-                tagsSection
             }
             .padding()
         }
@@ -74,6 +75,19 @@ struct ContactDetailView: View {
         .sheet(isPresented: $showingTagPicker) {
             tagPickerSheet
         }
+        .sheet(isPresented: $showingAddTodo) {
+            AddNoteView(
+                viewModel: NotesViewModel(supabaseService: viewModel.supabaseService), 
+                person: viewModel.person, 
+                supabaseService: viewModel.supabaseService,
+                initialType: .todo
+            )
+            .onDisappear {
+                Task {
+                    await viewModel.loadData()
+                }
+            }
+        }
         .task {
             await viewModel.loadData()
         }
@@ -81,53 +95,93 @@ struct ContactDetailView: View {
     
     @ViewBuilder
     private var contactHeader: some View {
-        VStack(spacing: 16) {
-            // Profile Image
-            ZStack {
-                Circle()
-                    .fill(Color.gray.opacity(0.2))
-                    .frame(width: 100, height: 100)
+        HStack(alignment: .top, spacing: 20) {
+            // Left side: Profile and Name
+            VStack(spacing: 12) {
+                // Profile Image
+                ZStack {
+                    Circle()
+                        .fill(Color.gray.opacity(0.2))
+                        .frame(width: 80, height: 80)
+                    
+                    Text(viewModel.initials)
+                        .font(.title)
+                        .fontWeight(.medium)
+                        .foregroundColor(.primary)
+                }
                 
-                Text(viewModel.initials)
-                    .font(.largeTitle)
-                    .fontWeight(.medium)
-                    .foregroundColor(.primary)
-            }
-            
-            // Name and identifier
-            VStack(spacing: 4) {
+                // Name
                 Text(viewModel.displayName)
-                    .font(.title2)
+                    .font(.headline)
                     .fontWeight(.semibold)
+                    .multilineTextAlignment(.center)
                 
-                if viewModel.person.displayName != nil {
-                    Text(viewModel.person.contactIdentifier)
-                        .font(.caption)
-                        .foregroundColor(.secondary)
+                // Status badges
+                VStack(spacing: 8) {
+                    if let lastContact = viewModel.lastContactText {
+                        Label(lastContact, systemImage: "clock")
+                            .font(.caption)
+                            .padding(.horizontal, 10)
+                            .padding(.vertical, 4)
+                            .background(Color.gray.opacity(0.1))
+                            .cornerRadius(6)
+                    }
+                    
+                    if viewModel.person.unreadCount > 0 {
+                        Label("\(viewModel.person.unreadCount) unread", systemImage: "envelope.badge")
+                            .font(.caption)
+                            .padding(.horizontal, 10)
+                            .padding(.vertical, 4)
+                            .background(Color.blue.opacity(0.1))
+                            .foregroundColor(.blue)
+                            .cornerRadius(6)
+                    }
                 }
             }
+            .frame(maxWidth: .infinity)
             
-            // Status badges
-            HStack(spacing: 12) {
-                if let lastContact = viewModel.lastContactText {
-                    Label(lastContact, systemImage: "clock")
-                        .font(.caption)
-                        .padding(.horizontal, 12)
-                        .padding(.vertical, 6)
-                        .background(Color.gray.opacity(0.1))
+            // Right side: Quick Actions
+            VStack(spacing: 10) {
+                // Send Message button
+                Button(action: viewModel.openMessagesApp) {
+                    Label("Message", systemImage: "message.fill")
+                        .font(.subheadline)
+                        .fontWeight(.medium)
+                        .frame(maxWidth: .infinity)
+                        .padding(.vertical, 10)
+                        .background(Color.green)
+                        .foregroundColor(.white)
                         .cornerRadius(8)
                 }
+                .buttonStyle(PlainButtonStyle())
                 
-                if viewModel.person.unreadCount > 0 {
-                    Label("\(viewModel.person.unreadCount) unread", systemImage: "envelope.badge")
-                        .font(.caption)
-                        .padding(.horizontal, 12)
-                        .padding(.vertical, 6)
-                        .background(Color.blue.opacity(0.1))
-                        .foregroundColor(.blue)
+                // Add Note button
+                Button(action: { showingAddNote = true }) {
+                    Label("Add Note", systemImage: "note.text.badge.plus")
+                        .font(.subheadline)
+                        .fontWeight(.medium)
+                        .frame(maxWidth: .infinity)
+                        .padding(.vertical, 10)
+                        .background(Color.blue)
+                        .foregroundColor(.white)
                         .cornerRadius(8)
                 }
+                .buttonStyle(PlainButtonStyle())
+                
+                // Add Todo button
+                Button(action: { showingAddTodo = true }) {
+                    Label("Add Todo", systemImage: "checklist")
+                        .font(.subheadline)
+                        .fontWeight(.medium)
+                        .frame(maxWidth: .infinity)
+                        .padding(.vertical, 10)
+                        .background(Color.orange)
+                        .foregroundColor(.white)
+                        .cornerRadius(8)
+                }
+                .buttonStyle(PlainButtonStyle())
             }
+            .frame(maxWidth: .infinity)
         }
         .padding(.vertical)
     }

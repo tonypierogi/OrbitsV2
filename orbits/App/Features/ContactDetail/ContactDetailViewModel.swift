@@ -1,5 +1,8 @@
 import Foundation
 import OrbitsKit
+#if os(iOS)
+import UIKit
+#endif
 
 @MainActor
 class ContactDetailViewModel: ObservableObject {
@@ -269,6 +272,39 @@ class ContactDetailViewModel: ObservableObject {
             } catch {
                 print("Error toggling needs response: \(error)")
             }
+        }
+    }
+    
+    func openMessagesApp() {
+        // Determine the appropriate URL scheme
+        var urlString: String?
+        
+        // First try phone number
+        if let phoneNumber = person.phoneNumber {
+            // Remove any non-numeric characters except +
+            let cleanedNumber = phoneNumber.replacingOccurrences(of: "[^0-9+]", with: "", options: .regularExpression)
+            urlString = "sms://\(cleanedNumber)"
+        } else if let email = person.emailAddress {
+            // Use email for iMessage
+            urlString = "mailto:\(email)"
+        } else {
+            // Fall back to contact identifier
+            let identifier = person.contactIdentifier
+            if identifier.contains("@") {
+                urlString = "mailto:\(identifier)"
+            } else if identifier.contains("+") || CharacterSet.decimalDigits.isSuperset(of: CharacterSet(charactersIn: identifier)) {
+                let cleanedNumber = identifier.replacingOccurrences(of: "[^0-9+]", with: "", options: .regularExpression)
+                urlString = "sms://\(cleanedNumber)"
+            }
+        }
+        
+        // Open the URL if we have one
+        if let urlString = urlString, let url = URL(string: urlString) {
+            #if os(iOS)
+            if UIApplication.shared.canOpenURL(url) {
+                UIApplication.shared.open(url)
+            }
+            #endif
         }
     }
 }

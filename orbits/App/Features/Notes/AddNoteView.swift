@@ -6,7 +6,7 @@ struct AddNoteView: View {
     @ObservedObject var viewModel: NotesViewModel
     
     @State private var noteText = ""
-    @State private var selectedType: NoteType = .note
+    @State private var selectedType: NoteType
     @State private var selectedDate: Date = Date().addingTimeInterval(86400) // Tomorrow
     @State private var hasDueDate = false
     @State private var selectedPerson: Person?
@@ -16,11 +16,12 @@ struct AddNoteView: View {
     let person: Person?
     private let supabaseService: SupabaseService
     
-    init(viewModel: NotesViewModel, person: Person? = nil, supabaseService: SupabaseService? = nil) {
+    init(viewModel: NotesViewModel, person: Person? = nil, supabaseService: SupabaseService? = nil, initialType: NoteType = .note) {
         self.viewModel = viewModel
         self.person = person
         self.supabaseService = supabaseService ?? SupabaseService(client: SupabaseManager.shared.client)
         self._selectedPerson = State(initialValue: person)
+        self._selectedType = State(initialValue: initialType)
     }
     
     var body: some View {
