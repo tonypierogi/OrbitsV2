@@ -434,6 +434,7 @@ struct ContactDetailView: View {
             allTags: viewModel.allTags,
             categories: viewModel.tagCategories,
             selectedTags: viewModel.personTags,
+            supabaseService: viewModel.supabaseService,
             onSave: { selectedTags in
                 Task {
                     await viewModel.updatePersonTags(selectedTags)
