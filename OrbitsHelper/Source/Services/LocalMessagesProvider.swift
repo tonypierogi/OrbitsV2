@@ -14,9 +14,10 @@ struct LocalMessagesProvider {
     func fetchUnreadMessageThreads() -> [String] {
         do {
             let threads = try messageDatabaseService.fetchMessageThreads()
+            // Return all handles from threads with unread messages
             return threads
-                .filter { $0.unreadCount > 0 }
-                .map { $0.handle }
+                .filter { $0.hasUnreadMessages }
+                .flatMap { $0.handles }
         } catch {
             print("Error fetching unread messages: \(error.localizedDescription)")
             return []

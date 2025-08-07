@@ -8,6 +8,8 @@ struct OrbitsView: View {
     @State private var showingSettings = false
     @State private var sortOption: SortOption = .leastOverdue
     @State private var filterOption: FilterOption = .all
+    @State private var randomizedPeopleIds: [UUID]? = nil
+    @State private var selectedPerson: Person? = nil
     
     enum SortOption: String, CaseIterable {
         case mostOverdue = "Most Overdue"
@@ -30,65 +32,95 @@ struct OrbitsView: View {
     
     var body: some View {
         List {
-            if viewModel.isLoading {
-                HStack {
-                    Spacer()
-                    ProgressView()
-                    Spacer()
-                }
-                .listRowBackground(Color.clear)
-                .listRowSeparator(.hidden)
-            } else if sortedAndFilteredPeople.isEmpty {
-                emptyState
-                    .listRowBackground(Color.clear)
-                    .listRowSeparator(.hidden)
-                    .listRowInsets(EdgeInsets())
-            } else {
-                ForEach(sortedAndFilteredPeople, id: \.id) { person in
-                    ContactCard(
-                        person: person, 
-                        tags: viewModel.personTags[person.id] ?? [],
-                        onTap: {
-                            // Navigation handled by background NavigationLink
-                        }, 
-                        onMessage: {
-                            openMessagesApp(for: person)
-                        }
-                    )
-                    .background(
-                        NavigationLink(destination: ContactDetailView(person: person, supabaseService: viewModel.supabaseService)) {
-                            EmptyView()
-                        }
-                        .opacity(0)
-                    )
-                    .listRowBackground(Color.clear)
-                    .listRowSeparator(.hidden)
-                    .listRowInsets(EdgeInsets(top: 6, leading: 16, bottom: 6, trailing: 16))
-                    .swipeActions(edge: .leading, allowsFullSwipe: false) {
-                        Button(role: .destructive) {
-                            Task {
-                                await viewModel.removeOrbit(from: person)
-                            }
-                        } label: {
-                            Label("Remove Orbit", systemImage: "xmark.circle")
-                        }
+                if viewModel.isLoading && viewModel.peopleNeedingAttention.isEmpty {
+                    // Show skeleton loading UI
+                    ForEach(0..<6, id: \.self) { _ in
+                        ContactCardSkeleton()
+                            .padding(.horizontal, 16)
+                            .padding(.vertical, 6)
                     }
-                    .swipeActions(edge: .trailing, allowsFullSwipe: false) {
-                        Button {
-                            Task {
+                    .listRowBackground(Color.clear)
+                    .listRowSeparator(.hidden)
+                } else if viewModel.filteredPeople.isEmpty && !viewModel.isLoading {
+                    emptyState
+                        .listRowBackground(Color.clear)
+                        .listRowSeparator(.hidden)
+                        .listRowInsets(EdgeInsets())
+                } else {
+                    ForEach(viewModel.filteredPeople, id: \.id) { person in
+                        SwipeableContactCard(
+                            person: person,
+                            tags: viewModel.personTags[person.id] ?? [],
+                            onTap: {
+                                selectedPerson = person
+                            },
+                            onMessage: {
+                                openMessagesApp(for: person)
+                            },
+                            onRemoveOrbit: {
+                                await viewModel.removeOrbit(from: person)
+                            },
+                            onSnooze: {
                                 await viewModel.snooze(person: person, days: 3)
                             }
-                        } label: {
-                            Label("Snooze 3 Days", systemImage: "moon.zzz")
+                        )
+                        .listRowBackground(Color.clear)
+                        .listRowSeparator(.hidden)
+                        .listRowInsets(EdgeInsets(top: 6, leading: 16, bottom: 6, trailing: 16))
+                        .onAppear {
+                            // Load more when reaching last few items
+                            if let index = viewModel.filteredPeople.firstIndex(where: { $0.id == person.id }),
+                               index >= viewModel.filteredPeople.count - 3 {
+                                Task {
+                                    await viewModel.loadMoreData()
+                                }
+                            }
                         }
-                        .tint(.orange)
+                    }
+                    
+                    // Loading more indicator
+                    if viewModel.isLoadingMore {
+                        HStack {
+                            Spacer()
+                            ProgressView()
+                            Text("Loading more...")
+                                .font(.caption)
+                                .foregroundColor(.secondary)
+                            Spacer()
+                        }
+                        .padding()
+                        .listRowBackground(Color.clear)
+                        .listRowSeparator(.hidden)
                     }
                 }
-            }
         }
         .listStyle(PlainListStyle())
+        .background(
+            NavigationLink(
+                destination: Group {
+                    if let person = selectedPerson {
+                        ContactDetailView(person: person, supabaseService: viewModel.supabaseService)
+                    }
+                },
+                isActive: Binding(
+                    get: { selectedPerson != nil },
+                    set: { if !$0 { selectedPerson = nil } }
+                )
+            ) {
+                EmptyView()
+            }
+        )
         .navigationTitle("Orbits")
         .searchable(text: $searchText, prompt: "Search contacts")
+        .onChange(of: searchText) { _ in
+            viewModel.updateSearchText(searchText)
+        }
+        .onChange(of: sortOption) { _ in
+            viewModel.updateSortOption(sortOption)
+        }
+        .onChange(of: filterOption) { _ in
+            viewModel.updateFilterOption(filterOption)
+        }
         .toolbar {
             ToolbarItem(placement: .navigationBarTrailing) {
                 HStack(spacing: 12) {
@@ -114,11 +146,21 @@ struct OrbitsView: View {
             }
         }
         .refreshable {
-            await viewModel.loadData()
+            // Create new randomization on refresh
+            if viewModel.peopleNeedingAttention.count > 10 {
+                randomizedPeopleIds = viewModel.peopleNeedingAttention.shuffled().map { $0.id }
+            } else {
+                randomizedPeopleIds = nil
+            }
+            await viewModel.loadData(forceRefresh: true)
         }
         .onAppear {
             Task {
                 await viewModel.loadData()
+                // Set initial randomization if needed
+                if randomizedPeopleIds == nil && viewModel.peopleNeedingAttention.count > 10 {
+                    randomizedPeopleIds = viewModel.peopleNeedingAttention.shuffled().map { $0.id }
+                }
             }
         }
     }
@@ -195,86 +237,8 @@ struct OrbitsView: View {
         }
     }
     
-    private var sortedAndFilteredPeople: [Person] {
-        let filtered = filteredPeople
-        
-        switch sortOption {
-        case .mostOverdue:
-            return filtered.sorted { person1, person2 in
-                let days1 = daysSinceLastContact(for: person1) ?? 0
-                let days2 = daysSinceLastContact(for: person2) ?? 0
-                return days1 > days2
-            }
-        case .leastOverdue:
-            return filtered.sorted { person1, person2 in
-                let days1 = daysSinceLastContact(for: person1) ?? 0
-                let days2 = daysSinceLastContact(for: person2) ?? 0
-                return days1 < days2
-            }
-        case .name:
-            return filtered.sorted { person1, person2 in
-                let name1 = person1.displayName ?? person1.contactIdentifier
-                let name2 = person2.displayName ?? person2.contactIdentifier
-                return name1 < name2
-            }
-        case .lastContact:
-            return filtered.sorted { person1, person2 in
-                let date1 = person1.lastMessageAt ?? Date.distantPast
-                let date2 = person2.lastMessageAt ?? Date.distantPast
-                return date1 < date2
-            }
-        }
-    }
-    
-    private var filteredPeople: [Person] {
-        var people = viewModel.peopleNeedingAttention
-        
-        // Apply orbit filter
-        switch filterOption {
-        case .all:
-            break
-        case .nearOrbit:
-            people = people.filter { $0.orbit?.name == "Near" }
-        case .middleOrbit:
-            people = people.filter { $0.orbit?.name == "Middle" }
-        case .farOrbit:
-            people = people.filter { $0.orbit?.name == "Far" }
-        case .outerOrbit:
-            people = people.filter { $0.orbit?.name == "Outer" }
-        }
-        
-        // Apply search filter
-        if !searchText.isEmpty {
-            people = people.filter { person in
-                // Search in display name and contact identifier
-                let name = person.displayName ?? person.contactIdentifier
-                if name.localizedCaseInsensitiveContains(searchText) {
-                    return true
-                }
-                
-                // Search in tags
-                if let tags = viewModel.personTags[person.id] {
-                    for tag in tags {
-                        if tag.label.localizedCaseInsensitiveContains(searchText) {
-                            return true
-                        }
-                    }
-                }
-                
-                return false
-            }
-        }
-        
-        return people
-    }
-    
-    private func daysSinceLastContact(for person: Person) -> Int? {
-        guard let lastMessageDate = person.lastMessageAt else { return nil }
-        return Calendar.current.dateComponents([.day], from: lastMessageDate, to: Date()).day
-    }
-    
     private func openMessagesApp(for person: Person) {
-        let contactIdentifier = person.contactIdentifier
+        let contactIdentifier = person.phoneNumber ?? person.emailAddress ?? person.contactIdentifier
         
         // Clean phone number (remove non-numeric characters except +)
         let cleanedIdentifier = contactIdentifier.replacingOccurrences(of: "[^0-9+]", with: "", options: .regularExpression)

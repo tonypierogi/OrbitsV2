@@ -283,7 +283,7 @@ class ContactDetailViewModel: ObservableObject {
         if let phoneNumber = person.phoneNumber {
             // Remove any non-numeric characters except +
             let cleanedNumber = phoneNumber.replacingOccurrences(of: "[^0-9+]", with: "", options: .regularExpression)
-            urlString = "sms://\(cleanedNumber)"
+            urlString = "sms:\(cleanedNumber)"
         } else if let email = person.emailAddress {
             // Use email for iMessage
             urlString = "mailto:\(email)"
@@ -294,7 +294,7 @@ class ContactDetailViewModel: ObservableObject {
                 urlString = "mailto:\(identifier)"
             } else if identifier.contains("+") || CharacterSet.decimalDigits.isSuperset(of: CharacterSet(charactersIn: identifier)) {
                 let cleanedNumber = identifier.replacingOccurrences(of: "[^0-9+]", with: "", options: .regularExpression)
-                urlString = "sms://\(cleanedNumber)"
+                urlString = "sms:\(cleanedNumber)"
             }
         }
         

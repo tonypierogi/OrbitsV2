@@ -6,10 +6,12 @@ struct MessageDatabaseService {
     private let databasePath: String
     
     struct MessageThread {
-        let handle: String          // Phone number or email
-        let unreadCount: Int
+        let chatId: String           // Chat GUID
+        let handles: [String]        // Phone numbers/emails of participants
+        let displayName: String?     // Group chat name if applicable
+        let isGroup: Bool           // Whether this is a group chat
+        let hasUnreadMessages: Bool  // True if has unread messages
         let lastMessageAt: Date?
-        let needsResponse: Bool
     }
     
     init() {
@@ -65,30 +67,40 @@ struct MessageDatabaseService {
         }
         defer { sqlite3_close(db) }
         
-        // Query to get message statistics for individual chats only
+        // Query to get all chats with unread status using hybrid approach
+        // Checks both is_read flag and last_read_message_timestamp for comprehensive detection
         let query = """
-            SELECT 
-                handle.id as handle_id,
-                handle.country,
-                MAX(message.date) as last_message_time,
-                COUNT(message.ROWID) as total_messages,
-                SUM(CASE WHEN message.is_from_me = 0 AND message.is_read = 0 THEN 1 ELSE 0 END) as unread_count,
-                MAX(CASE WHEN message.is_from_me = 0 THEN message.date ELSE 0 END) as last_from_them,
-                MAX(CASE WHEN message.is_from_me = 1 THEN message.date ELSE 0 END) as last_from_me,
-                MAX(CASE WHEN message.is_from_me = 0 AND message.date = (
-                    SELECT MAX(m2.date) FROM message m2 WHERE m2.handle_id = handle.ROWID
-                ) THEN message.is_read ELSE 1 END) as last_message_read
-            FROM handle
-            LEFT JOIN message ON message.handle_id = handle.ROWID
-            LEFT JOIN chat_handle_join ON chat_handle_join.handle_id = handle.ROWID
-            LEFT JOIN chat ON chat.ROWID = chat_handle_join.chat_id
-            WHERE chat.ROWID IN (
-                SELECT chat_id FROM chat_handle_join 
-                GROUP BY chat_id 
-                HAVING COUNT(handle_id) = 1
+            WITH chat_unread_info AS (
+                SELECT 
+                    c.ROWID as chat_rowid,
+                    c.guid as chat_id,
+                    c.display_name,
+                    c.last_read_message_timestamp,
+                    MAX(m.date) as last_message_date,
+                    -- Check for unread using both methods
+                    MAX(CASE 
+                        WHEN m.is_from_me = 0 AND m.is_read = 0 THEN 1
+                        WHEN m.is_from_me = 0 AND c.last_read_message_timestamp > 0 
+                             AND m.date > c.last_read_message_timestamp THEN 1
+                        ELSE 0
+                    END) as has_unread
+                FROM chat c
+                JOIN chat_message_join cmj ON c.ROWID = cmj.chat_id
+                JOIN message m ON m.ROWID = cmj.message_id
+                GROUP BY c.ROWID, c.guid, c.display_name, c.last_read_message_timestamp
             )
-            GROUP BY handle.id, handle.country
-            HAVING total_messages > 0
+            SELECT 
+                cui.chat_id,
+                cui.display_name,
+                GROUP_CONCAT(DISTINCT h.id) as participants,
+                COUNT(DISTINCT h.id) as participant_count,
+                cui.last_message_date,
+                cui.has_unread
+            FROM chat_unread_info cui
+            LEFT JOIN chat_handle_join chj ON cui.chat_rowid = chj.chat_id
+            LEFT JOIN handle h ON h.ROWID = chj.handle_id
+            GROUP BY cui.chat_rowid, cui.chat_id, cui.display_name, cui.last_message_date, cui.has_unread
+            HAVING cui.last_message_date IS NOT NULL
         """
         
         var statement: OpaquePointer?
@@ -101,27 +113,40 @@ struct MessageDatabaseService {
         var threads: [MessageThread] = []
         
         while sqlite3_step(statement) == SQLITE_ROW {
-            // Get handle ID
-            let handleId = String(cString: sqlite3_column_text(statement, 0))
+            // Get chat ID (column 0)
+            let chatId = String(cString: sqlite3_column_text(statement, 0))
             
-            // Get timestamps
-            let lastMessageTime = sqlite3_column_double(statement, 2)
-            let unreadCount = Int(sqlite3_column_int(statement, 4))
-            let lastFromThem = sqlite3_column_double(statement, 5)
-            let lastFromMe = sqlite3_column_double(statement, 6)
-            let lastMessageRead = sqlite3_column_int(statement, 7)
+            // Get display name if exists (column 1)
+            let displayName: String? = if sqlite3_column_type(statement, 1) != SQLITE_NULL {
+                String(cString: sqlite3_column_text(statement, 1))
+            } else {
+                nil
+            }
             
-            // Determine if needs response
-            let needsResponse = lastFromThem > lastFromMe && lastMessageRead == 0
+            // Get participants (column 2)
+            let participantsStr = String(cString: sqlite3_column_text(statement, 2))
+            let handles = participantsStr.split(separator: ",").map { String($0) }
+            
+            // Get participant count (column 3)
+            let participantCount = Int(sqlite3_column_int(statement, 3))
+            let isGroup = participantCount > 1
+            
+            // Get last message time (column 4)
+            let lastMessageTime = sqlite3_column_double(statement, 4)
+            
+            // Get unread status (column 5)
+            let hasUnread = Int(sqlite3_column_int(statement, 5))
             
             // Convert Apple time to Date
             let lastMessageDate = lastMessageTime > 0 ? Self.appleTimeToDate(lastMessageTime) : nil
             
             threads.append(MessageThread(
-                handle: handleId,
-                unreadCount: unreadCount,
-                lastMessageAt: lastMessageDate,
-                needsResponse: needsResponse
+                chatId: chatId,
+                handles: handles,
+                displayName: displayName,
+                isGroup: isGroup,
+                hasUnreadMessages: hasUnread > 0,
+                lastMessageAt: lastMessageDate
             ))
         }
         

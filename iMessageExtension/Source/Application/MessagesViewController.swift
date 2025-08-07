@@ -7,21 +7,101 @@
 
 import UIKit
 import Messages
+import SwiftUI
 
 class MessagesViewController: MSMessagesAppViewController {
     
+    private var hostingController: UIHostingController<QuickAddNoteView>?
+    private var currentRemoteParticipantId: String?
+    
     override func viewDidLoad() {
         super.viewDidLoad()
-        // Do any additional setup after loading the view.
+        print("[MessagesVC] viewDidLoad called")
+        // Don't setup view here - wait for willBecomeActive
+    }
+    
+    private func setupSwiftUIView() {
+        // Extract participant ID before creating view
+        currentRemoteParticipantId = extractRemoteParticipantId()
+        print("[MessagesVC] Setting up SwiftUI view with participant ID: \(currentRemoteParticipantId ?? "nil")")
+        
+        let swiftUIView = QuickAddNoteView(
+            conversation: activeConversation,
+            extensionContext: self.extensionContext,
+            remoteParticipantId: currentRemoteParticipantId
+        )
+        
+        // Remove existing hosting controller if any
+        if let existingController = hostingController {
+            existingController.willMove(toParent: nil)
+            existingController.view.removeFromSuperview()
+            existingController.removeFromParent()
+        }
+        
+        hostingController = UIHostingController(rootView: swiftUIView)
+        
+        guard let hostingController = hostingController else { return }
+        
+        addChild(hostingController)
+        view.addSubview(hostingController.view)
+        hostingController.view.translatesAutoresizingMaskIntoConstraints = false
+        
+        NSLayoutConstraint.activate([
+            hostingController.view.topAnchor.constraint(equalTo: view.topAnchor),
+            hostingController.view.leadingAnchor.constraint(equalTo: view.leadingAnchor),
+            hostingController.view.trailingAnchor.constraint(equalTo: view.trailingAnchor),
+            hostingController.view.bottomAnchor.constraint(equalTo: view.bottomAnchor)
+        ])
+        
+        hostingController.didMove(toParent: self)
+    }
+    
+    private func updateSwiftUIView() {
+        // Extract participant ID before updating view
+        currentRemoteParticipantId = extractRemoteParticipantId()
+        print("[MessagesVC] Updating SwiftUI view with participant ID: \(currentRemoteParticipantId ?? "nil")")
+        
+        hostingController?.rootView = QuickAddNoteView(
+            conversation: activeConversation,
+            extensionContext: self.extensionContext,
+            remoteParticipantId: currentRemoteParticipantId
+        )
+    }
+    
+    private func extractRemoteParticipantId() -> String? {
+        // Get the first remote participant ID if available
+        // In a 1-on-1 conversation, there should be exactly one remote participant
+        guard let conversation = activeConversation else {
+            print("[MessagesVC] No active conversation available")
+            return nil
+        }
+        
+        print("[MessagesVC] Remote participant count: \(conversation.remoteParticipantIdentifiers.count)")
+        
+        guard let firstParticipantId = conversation.remoteParticipantIdentifiers.first else {
+            print("[MessagesVC] No remote participants in conversation")
+            return nil
+        }
+        
+        let idString = firstParticipantId.uuidString
+        print("[MessagesVC] Extracted remote participant ID: \(idString)")
+        print("[MessagesVC] UUID (original): \(idString)")
+        print("[MessagesVC] UUID (lowercase): \(idString.lowercased())")
+        return idString
     }
     
     // MARK: - Conversation Handling
     
     override func willBecomeActive(with conversation: MSConversation) {
-        // Called when the extension is about to move from the inactive to active state.
-        // This will happen when the extension is about to present UI.
+        print("[MessagesVC] willBecomeActive called")
+        print("[MessagesVC] Conversation available: \(conversation.remoteParticipantIdentifiers.count) participants")
         
-        // Use this method to configure the extension and restore previously stored state.
+        // Setup or update the SwiftUI view with the conversation
+        if hostingController == nil {
+            setupSwiftUIView()
+        } else {
+            updateSwiftUIView()
+        }
     }
     
     override func didResignActive(with conversation: MSConversation) {
@@ -61,6 +141,7 @@ class MessagesViewController: MSMessagesAppViewController {
         // Called after the extension transitions to a new presentation style.
     
         // Use this method to finalize any behaviors associated with the change in presentation style.
+        updateSwiftUIView()
     }
 
 }

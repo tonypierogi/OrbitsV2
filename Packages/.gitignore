@@ -1,8 +1,33 @@
+# macOS system files
 .DS_Store
-/.build
-/Packages
-xcuserdata/
+
+# Xcode
+build/
 DerivedData/
+xcuserdata/
+*.xcworkspace
+*.xcuserstate
+*.xcsettings
+
+# Swift Package Manager
+/.build/
+/Packages
+.swiftpm/
+Package.resolved
+
+# IDEs and editors
+.vscode/
+.idea/
+
+# Logs and temp files
+*.log
+*.tmp
+
+# Node (if you’re using JS tooling)
+node_modules/
+dist/
+
+# Specific paths you had (likely not needed if above are covered)
 .swiftpm/configuration/registries.json
 .swiftpm/xcode/package.xcworkspace/contents.xcworkspacedata
 .netrc

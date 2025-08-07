@@ -8,9 +8,9 @@ struct ContactEnrichmentService {
     static func normalizePhoneNumber(_ phoneNumber: String) -> String {
         let digits = phoneNumber.components(separatedBy: CharacterSet.decimalDigits.inverted).joined()
         
-        // If it's a 10-digit number, add the US country code
-        if digits.count == 10 {
-            return "1" + digits
+        // Standardize on 10-digit format (remove country code if present)
+        if digits.count == 11 && digits.hasPrefix("1") {
+            return String(digits.dropFirst())
         }
         
         return digits
@@ -98,5 +98,17 @@ struct ContactEnrichmentService {
         
         // No identifiers found
         return nil
+    }
+    
+    // Get the primary phone number from contact
+    static func getPrimaryPhoneNumber(from contact: CNContact) -> String? {
+        guard let firstPhone = contact.phoneNumbers.first else { return nil }
+        return normalizePhoneNumber(firstPhone.value.stringValue)
+    }
+    
+    // Get the primary email address from contact
+    static func getPrimaryEmailAddress(from contact: CNContact) -> String? {
+        guard let firstEmail = contact.emailAddresses.first else { return nil }
+        return normalizeEmail(firstEmail.value as String)
     }
 }

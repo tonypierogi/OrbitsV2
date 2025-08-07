@@ -21,6 +21,7 @@ struct AuthenticationView: View {
                 Text(authError.localizedDescription)
                     .foregroundStyle(.red)
                     .font(.caption)
+                    .textSelection(.enabled)
             }
 
             if viewModel.isLoading {

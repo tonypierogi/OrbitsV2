@@ -13,6 +13,7 @@ struct MainView: View {
                 .foregroundStyle(.secondary)
                 .font(.body)
                 .multilineTextAlignment(.center)
+                .textSelection(.enabled)
             
             if let permissionStatus = viewModel.permissionStatus,
                !permissionStatus.allGranted,
@@ -23,6 +24,7 @@ struct MainView: View {
                     Text(instructions)
                         .font(.caption)
                         .foregroundStyle(.secondary)
+                        .textSelection(.enabled)
                 }
                 .padding()
                 .background(Color.gray.opacity(0.1))
@@ -57,6 +59,7 @@ struct MainView: View {
                     Text("(Message sync requires Full Disk Access)")
                         .font(.caption2)
                         .foregroundStyle(.orange)
+                        .textSelection(.enabled)
                 }
             }
         }
